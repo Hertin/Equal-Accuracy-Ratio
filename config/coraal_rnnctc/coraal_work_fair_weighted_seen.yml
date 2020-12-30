@@ -1,0 +1,62 @@
+use_gpu: true
+
+model:
+    name: RNNCTC
+    encoder: 
+        name: GRUBNEncoder
+        bidirectional: true
+        dropout: 0.5
+        hidden_size: 128
+        num_layers: 4
+    decoder: 
+        name: CTCDecoder
+        dropout: 0.0
+        hidden_size: 256
+        num_layers: 4
+    checkpoint: null
+    save_dir: checkpoints/base
+train:
+    seed: 2020
+    dataset: CORAALTranscriptionDatasetSattrIndex
+    data_dir: data/dialect_transcription
+    meta_data: config/dialect_transcription/data/dialects/trans_train_africa_american_seen_info.csv
+    batch_size: 32
+    lr: 0.001
+    lr_step: 5
+    num_workers: 4
+    grad_clip: 5.
+    optimizer: adam
+    weight_decay: 0.0
+    mom: 0.9
+    end_epoch: 30
+    print_freq: 20
+    ita: 0.1
+dev:
+    dataset: CORAALTranscriptionDatasetSattrIndex
+    data_dir: data/dialect_transcription
+    meta_data: config/dialect_transcription/data/dialects/trans_dev_africa_american_seen_info.csv
+    print_freq: 500
+test:
+    dataset: CORAALTranscriptionDatasetSattrIndex
+    data_dir: data/dialect_transcription
+    meta_data: config/dialect_transcription/data/dialects/trans_test_africa_american_seen_info.csv
+    beam_size: 10
+    print_freq: 500
+feature:
+    save_dir: data/dialect_transcription/stft
+    sample_rate: 8000
+    input_dim: 161
+    window_size: 25
+    stride: 5
+    cmvn: true
+    type: melspectrogram
+data:
+    label_dir: config/dialect_transcription/data/labels.json
+    sample_size: 20000
+    min_duration: 1
+    PAD_token: 0
+    SOS_token: 1
+    EOS_token: 2
+    vocab_size: 29
+    sensitive_attr_cardinality: 6
+    sensitive_attr: work_int
